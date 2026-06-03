@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Tracker — LS-GBL Framework | UNS 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f7f4;color:#1a1a18;font-size:14px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.container{max-width:860px;margin:0 auto;padding:24px 16px}
+/* Header */
+.site-header{background:#fff;border-bottom:1px solid #e5e3dc;padding:14px 0;position:sticky;top:0;z-index:100}
+.site-header .inner{max-width:860px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.site-title{font-size:15px;font-weight:500}
+.site-sub{font-size:11px;color:#888;margin-top:1px}
+/* Badges */
+.badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:500}
+.bp{background:#EEEDFE;color:#3C3489}.bt{background:#E1F5EE;color:#0F6E56}
+.ba{background:#FAEEDA;color:#854F0B}.bb{background:#E6F1FB;color:#185FA5}
+.bgr{background:#F1EFE8;color:#5F5E5A}.bc{background:#FAECE7;color:#993C1D}
+.bpi{background:#FBEAF0;color:#993556}.bg{background:#EAF3DE;color:#3B6D11}
+/* Stats */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.stat{background:#fff;border:1px solid #e5e3dc;border-radius:10px;padding:12px 14px}
+.stat-lbl{font-size:11px;color:#888;margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:500}
+/* Progress */
+.prog-wrap{margin-bottom:16px}
+.prog-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:5px}
+.prog-track{height:8px;background:#e5e3dc;border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:#534AB7;border-radius:4px;transition:width .4s}
+/* Filter bar */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-bar span{font-size:12px;color:#888}
+.btn{padding:6px 12px;border-radius:8px;border:1px solid #d5d3cc;background:#fff;color:#1a1a18;font-size:12px;cursor:pointer;transition:background .15s}
+.btn:hover{background:#f1efe8}
+.btn-pri{background:#534AB7;color:#fff;border-color:#534AB7}
+.btn-pri:hover{background:#3C3489}
+.btn-active{background:#f1efe8;font-weight:500}
+.btn-danger{color:#a32d2d;border-color:#f09595}
+.btn-danger:hover{background:#fcebeb}
+/* Phase card */
+.phase-card{background:#fff;border:1px solid #e5e3dc;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.phase-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#faf9f6;border-bottom:1px solid #e5e3dc;cursor:pointer;user-select:none;flex-wrap:wrap}
+.phase-head:hover{background:#f1efe8}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.phase-title{font-size:14px;font-weight:500;flex:1;min-width:160px}
+.phase-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.phase-prog-txt{font-size:12px;color:#888}
+.mini-prog{width:60px;height:4px;background:#e5e3dc;border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:4px}
+.mini-fill{height:100%;border-radius:2px;transition:width .3s}
+.tkt-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;background:#FAEEDA;color:#633806}
+.toggle-icon{font-size:11px;color:#888;flex-shrink:0}
+/* Phase body */
+.phase-body{display:none}
+.phase-body.open{display:block}
+.section-divider{font-size:11px;font-weight:500;color:#888;padding:6px 16px;background:#faf9f6;border-bottom:1px solid #e5e3dc;letter-spacing:.03em;text-transform:uppercase}
+/* Task row */
+.task-row{display:grid;grid-template-columns:30px 1fr auto;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid #e5e3dc;transition:background .1s}
+.task-row:last-child{border-bottom:none}
+.task-row:hover{background:#faf9f6}
+.task-row.done .task-title{text-decoration:line-through;color:#aaa}
+.task-row.done .task-target{color:#bbb}
+/* Checkbox */
+.cb{width:18px;height:18px;border:1.5px solid #ccc;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:#fff;margin-top:1px}
+.cb:hover{border-color:#7F77DD}
+.cb.checked{background:#534AB7;border-color:#534AB7}
+.cb.checked::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+/* Task content */
+.task-title{font-size:13px;font-weight:500;line-height:1.4;margin-bottom:3px}
+.task-target{font-size:12px;color:#666;line-height:1.4;margin-bottom:5px}
+.task-people{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
+.task-output{font-size:11px;color:#888;font-style:italic;line-height:1.4}
+.task-date{font-size:11px;color:#888;background:#f1efe8;border-radius:4px;padding:2px 8px;white-space:nowrap;align-self:flex-start;margin-top:1px}
+/* Avatar */
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:500}
+.av-a{background:#FAEEDA;color:#633806}.av-t{background:#E1F5EE;color:#085041}
+.av-p{background:#EEEDFE;color:#3C3489}.av-b{background:#E6F1FB;color:#0C447C}
+.av-c{background:#FAECE7;color:#712B13}.av-g{background:#EAF3DE;color:#27500A}
+.av-pi{background:#FBEAF0;color:#72243E}.av-am{background:#FAEEDA;color:#412402}
+/* Empty */
+.empty-msg{padding:24px;text-align:center;color:#888;font-size:13px}
+/* Footer */
+footer{text-align:center;font-size:11px;color:#aaa;padding:24px 0 16px;border-top:1px solid #e5e3dc;margin-top:24px}
+/* Responsive */
+@media(max-width:500px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .task-row{grid-template-columns:28px 1fr}
+  .task-date{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div>
+      <div class="site-title">Research Tracker — LS-GBL Framework</div>
+      <div class="site-sub">Scaffolding Adaptif Berbasis LLM · UNS 2026 · PFA-UNS</div>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">
+      <span class="badge bp" id="b-total">34 tugas</span>
+      <span class="badge bg" id="b-done">0 selesai</span>
+      <span class="badge bc" id="b-todo">34 belum</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-lbl">Total tugas</div><div class="stat-val" id="st-total">34</div></div>
+    <div class="stat"><div class="stat-lbl">Selesai</div><div class="stat-val" id="st-done" style="color:#0F6E56">0</div></div>
+    <div class="stat"><div class="stat-lbl">Belum</div><div class="stat-val" id="st-todo" style="color:#993C1D">34</div></div>
+    <div class="stat"><div class="stat-lbl">Progress</div><div class="stat-val" id="st-pct">0%</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Progress penelitian keseluruhan</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="main-prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="filter-bar">
+    <span>Tampilkan:</span>
+    <button class="btn btn-active" id="f-all" onclick="setFilter('all')">Semua</button>
+    <button class="btn" id="f-todo" onclick="setFilter('todo')">Belum selesai</button>
+    <button class="btn" id="f-done" onclick="setFilter('done')">Sudah selesai</button>
+    <button class="btn btn-pri" onclick="expandAll()">Buka semua fase</button>
+    <button class="btn" onclick="collapseAll()">Tutup semua</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset checklist</button>
+  </div>
+
+  <div id="phases-container"></div>
+
+  <footer>
+    LS-GBL Research Tracker · Universitas Sebelas Maret 2026 · Dr. Aris Budianto, S.T., M.Eng.
+  </footer>
+
+</div>
+
+<script>
+const PHASES=[{id:'f1',num:1,title:'Needs & Cognitive Task Analysis',sub:'Analisis kebutuhan & peta kesulitan linguistik',period:'Mei–Jun 2026',tkt:'TKT 2→3',colorClass:'bp',numBg:'#7F77DD',numColor:'#fff',miniFill:'#7F77DD',tasks:[{id:'f1_0a',section:'Persiapan administrasi',title:'Pembuatan Surat Ijin Penelitian ke 4 sekolah mitra',target:'Surat Ijin Penelitian ke 4 sekolah sudah disampaikan ke guru',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Surat Ijin Penelitian sudah disampaikan ke guru',date:'11–15 Mei 2026',done:false},{id:'f1_0b',section:'Persiapan administrasi',title:'Pembuatan Surat Undangan FGD',target:'Surat Undangan FGD sudah siap dan disampaikan ke guru',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Surat undangan FGD sudah disampaikan ke guru',date:'11–15 Mei 2026',done:false},{id:'f1_0c',section:'Persiapan administrasi',title:'Pembuatan media pretest (VLT + VKS + RC-PT + ERLQ)',target:'Media sudah bisa digunakan untuk tes diagnostik vocabulary & reading comprehension',people:[{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'AN',cls:'av-b',name:'Anggertha'},{init:'FA',cls:'av-c',name:'Fathiika'}],output:'Platform digital instrumen tes siap digunakan',date:'18–22 Mei 2026',done:false},{id:'f1_1',section:'Kegiatan inti',title:'Tes diagnostik vocabulary & reading comprehension',target:'≥100 responden siswa SMK mitra dari min. 2 sekolah',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'ADK',cls:'av-g',name:'Adik Nur H.'},{init:'FR',cls:'av-pi',name:'Faried'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Dataset skor diagnostik + error pattern siswa (CSV/JSON)',date:'26 Mei–8 Jun 2026',done:false},{id:'f1_2',section:'Kegiatan inti',title:'Analisis error pattern & pengukuran cognitive load',target:'Klasifikasi min. 4 jenis kesalahan linguistik',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'FA',cls:'av-c',name:'Fathiika'}],output:'Peta kesalahan linguistik + spesifikasi kebutuhan scaffolding',date:'9–22 Jun 2026',done:false},{id:'f1_3',section:'Kegiatan inti',title:'Wawancara guru EFL (min. 5 guru) & FGD sekolah mitra',target:'Min. 5 guru EFL diwawancara; FGD 1x dengan mitra',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'ADK',cls:'av-g',name:'Adik Nur H.'},{init:'FR',cls:'av-pi',name:'Faried'}],output:'Dokumen kebutuhan pedagogis + rekomendasi scaffolding',date:'16–26 Jun 2026',done:false},{id:'f1_4',section:'Output wajib',title:'Finalisasi laporan Fase 1 & dataset siap untuk Fase 3',target:'Semua output Fase 1 terdokumentasi; dataset diformat JSON/CSV',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Laporan Fase 1 final + dataset terformat',date:'27 Jun–10 Jul 2026',done:false}]},{id:'f2',num:2,title:'Perancangan LS-GBL Framework',sub:'Desain arsitektur & model konseptual',period:'Jun–Agt 2026',tkt:'TKT 3→4',colorClass:'bt',numBg:'#0F6E56',numColor:'#fff',miniFill:'#1D9E75',tasks:[{id:'f2_1',section:'Kegiatan inti',title:'Perancangan model konseptual LS-GBL Framework (5 layer)',target:'Dokumen arsitektur sistem 5 layer selesai; kelayakan pakar ≥80%',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'FL',cls:'av-b',name:'Febri Liantoni'}],output:'Dokumen arsitektur LS-GBL lengkap',date:'Jul 2026',done:false},{id:'f2_2',section:'Kegiatan inti',title:'Desain jenis scaffolding adaptif (min. 4 jenis)',target:'Hint ringan, elaborasi, modeling, Socratic questioning',people:[{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'AB',cls:'av-a',name:'Ketua'}],output:'Dokumen desain strategi scaffolding + skenario penggunaan',date:'Jul 2026',done:false},{id:'f2_3',section:'Kegiatan inti',title:'Desain mekanisme adaptasi kognitif (3 level bantuan)',target:'Hint ringan → elaborasi → guided reasoning',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"}],output:'Spesifikasi teknis mekanisme adaptasi',date:'Jul 2026',done:false},{id:'f2_4',section:'Kegiatan inti',title:'Desain konten linguistik & skenario serious game',target:'Min. 3 skenario game; sesuai kurikulum SMK',people:[{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'AN',cls:'av-b',name:'Anggertha'}],output:'Skenario game + bank soal vocabulary/reading',date:'Agt 2026',done:false},{id:'f2_5',section:'Output wajib',title:'Dokumen LS-GBL Framework final & validasi pakar awal',target:'Dokumen lengkap; validasi min. 2 pakar; skor ≥80%',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'FL',cls:'av-b',name:'Febri Liantoni'}],output:'Framework LS-GBL tervalidasi → fondasi Fase 3',date:'Agt 2026',done:false}]},{id:'f3',num:3,title:'Pengembangan Prototipe',sub:'Serious game + LLM engine + teacher dashboard',period:'Agt–Nov 2026',tkt:'TKT 4',colorClass:'ba',numBg:'#BA7517',numColor:'#fff',miniFill:'#BA7517',tasks:[{id:'f3_1',section:'Pengembangan sistem',title:'Pengembangan serious game — Interaction Layer',target:'Prototipe stabil; ≥3 level gameplay; UI <2 detik',people:[{init:'AN',cls:'av-b',name:'Anggertha'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"}],output:'Prototipe game fungsional (web/mobile)',date:'Agt–Sep 2026',done:false},{id:'f3_2',section:'Pengembangan sistem',title:'Integrasi LLM sebagai scaffolding engine',target:'Generative feedback kontekstual; latency ≤3 detik',people:[{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'AB',cls:'av-a',name:'Ketua'}],output:'LLM Scaffolding Engine terintegrasi dalam gameplay',date:'Sep–Okt 2026',done:false},{id:'f3_3',section:'Pengembangan sistem',title:'Pengembangan Learner Modeling Layer',target:'Profil siswa real-time; tracking min. 5 indikator',people:[{init:'FA',cls:'av-c',name:'Fathiika'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"}],output:'Learner model dinamis',date:'Okt 2026',done:false},{id:'f3_4',section:'Pengembangan sistem',title:'Pengembangan Teacher Analytics Dashboard',target:'Min. 4 visualisasi; fitur override manual',people:[{init:'FA',cls:'av-c',name:'Fathiika'},{init:'AN',cls:'av-b',name:'Anggertha'}],output:'Dashboard interaktif guru',date:'Okt–Nov 2026',done:false},{id:'f3_5',section:'Infrastruktur',title:'Sewa & deployment cloud server + domain',target:'Server aktif; uptime ≥99%; domain 1 tahun',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"}],output:'Sistem terdeploy di cloud; domain aktif',date:'Sep 2026',done:false}]},{id:'f4',num:4,title:'Expert Review & Usability Testing',sub:'Validasi ahli multidisipliner + uji terbatas',period:'Nov–Des 2026',tkt:'TKT 4→5',colorClass:'bc',numBg:'#993C1D',numColor:'#fff',miniFill:'#D85A30',tasks:[{id:'f4_1',section:'Validasi ahli',title:'Validasi ahli AI, linguistik, dan teknologi pembelajaran',target:'Skor ≥80%; min. 3 validator ahli',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'}],output:'Laporan validasi ahli; revisi sistem',date:'Nov 2026',done:false},{id:'f4_2',section:'Uji terbatas',title:'Usability testing terbatas (20 siswa)',target:'Min. 20 siswa; SUS ≥70; respons ≤3 detik',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'ADK',cls:'av-g',name:'Adik Nur H.'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Laporan usability + daftar bug prioritas',date:'Nov–Des 2026',done:false},{id:'f4_3',section:'Perbaikan',title:'Revisi prototipe berdasarkan hasil validasi',target:'Semua catatan kritis tertangani → TKT 4',people:[{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'AN',cls:'av-b',name:'Anggertha'},{init:'FA',cls:'av-c',name:'Fathiika'}],output:'Prototipe tervalidasi siap eksperimen',date:'Des 2026',done:false}]},{id:'f5',num:5,title:'Iterative DBR Cycles',sub:'Implementasi terbatas di sekolah mitra',period:'Jan–Feb 2027',tkt:'TKT 5',colorClass:'bb',numBg:'#185FA5',numColor:'#fff',miniFill:'#378ADD',tasks:[{id:'f5_1',section:'Implementasi lapangan',title:'DBR Siklus 1 — implementasi terbatas di sekolah mitra',target:'Min. 1 sekolah; min. 2 kelas; min. 4 sesi',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'ADK',cls:'av-g',name:'Adik Nur H.'}],output:'Log interaksi siswa; catatan observasi kelas',date:'Jan 2027',done:false},{id:'f5_2',section:'Penyempurnaan sistem',title:'Analisis data interaksi & penyempurnaan scaffolding LLM',target:'Min. 3 iterasi; error rate turun ≥10%',people:[{init:'FA',cls:'av-c',name:'Fathiika'},{init:'KN',cls:'av-p',name:"Khoirunnisa'"},{init:'AB',cls:'av-a',name:'Ketua'}],output:'Model scaffolding disempurnakan',date:'Feb 2027',done:false}]},{id:'f6',num:6,title:'Quasi-Experimental Evaluation',sub:'Pretest–posttest control group design',period:'Feb–Apr 2027',tkt:'TKT 5',colorClass:'bg',numBg:'#3B6D11',numColor:'#fff',miniFill:'#639922',tasks:[{id:'f6_1',section:'Eksperimen',title:'Implementasi eksperimen (eksperimen vs kontrol)',target:'Min. 2 kelas; ≥60 siswa; randomisasi terdokumentasi',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'ADK',cls:'av-g',name:'Adik Nur H.'},{init:'FR',cls:'av-pi',name:'Faried'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Dataset pretest–posttest; data engagement & SRL',date:'Feb–Mar 2027',done:false},{id:'f6_2',section:'Pengukuran',title:'Pengukuran 5 variabel outcome',target:'α ≥0.7; r ≥0.3 untuk semua instrumen',people:[{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'AB',cls:'av-a',name:'Ketua'},{init:'FA',cls:'av-c',name:'Fathiika'}],output:'Dataset lengkap 5 variabel',date:'Mar 2027',done:false},{id:'f6_3',section:'Analisis statistik',title:'Analisis ANCOVA + effect size',target:"Effect size ≥0.5 pada min. 3 variabel; p <0.05",people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'FA',cls:'av-c',name:'Fathiika'}],output:'Laporan statistik; bukti efektivitas',date:'Apr 2027',done:false}]},{id:'f7',num:7,title:'Learning Analytics & Diseminasi',sub:'Pemodelan prediktif & publikasi',period:'Apr–Jun 2027',tkt:'TKT 5',colorClass:'bgr',numBg:'#888780',numColor:'#fff',miniFill:'#888780',tasks:[{id:'f7_1',section:'Pemodelan',title:'Pemodelan prediktif berbasis log interaksi',target:'Akurasi ≥70%; ≥3 pola kesulitan dominan',people:[{init:'FA',cls:'av-c',name:'Fathiika'},{init:'AB',cls:'av-a',name:'Ketua'}],output:'Model prediktif siap skalasi → TKT 5',date:'Apr 2027',done:false},{id:'f7_2',section:'Publikasi',title:'Artikel Scopus Q3 (IJEIRE) + prosiding ICE ELINVO',target:'1 artikel submit IJEIRE; 1 prosiding ICE ELINVO 2026',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'MH',cls:'av-t',name:'Dr. Mariana'},{init:'FL',cls:'av-b',name:'Febri Liantoni'}],output:'Naskah artikel internasional Scopus',date:'Mei 2027',done:false},{id:'f7_3',section:'Publikasi',title:'Artikel Sinta 2 — publikasi nasional',target:'1 artikel submit jurnal Sinta 2',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'FL',cls:'av-b',name:'Febri Liantoni'}],output:'Artikel Sinta 2 tersubmit',date:'Mei 2027',done:false},{id:'f7_4',section:'Administrasi akhir',title:'Pendaftaran HKI perangkat lunak LS-GBL',target:'1 HKI program komputer terdaftar',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Sertifikat HKI perangkat lunak',date:'Jun 2027',done:false},{id:'f7_5',section:'Administrasi akhir',title:'Pelaporan akhir & ethical clearance tersimpan',target:'Laporan akhir lengkap; semua berkas LPPM terpenuhi',people:[{init:'AB',cls:'av-a',name:'Ketua'},{init:'RH',cls:'av-am',name:'Reva Hilya'}],output:'Laporan final + berkas administrasi lengkap',date:'Jun 2027',done:false}]}];
+
+let filter='all';
+let openPhases=new Set(['f1']);
+
+function loadState(){try{const s=localStorage.getItem('lsgbl_tracker_v2');if(s){const d=JSON.parse(s);PHASES.forEach(ph=>ph.tasks.forEach(t=>{if(d[t.id]!==undefined)t.done=d[t.id]}))}}catch(e){}}
+function saveState(){try{const d={};PHASES.forEach(ph=>ph.tasks.forEach(t=>d[t.id]=t.done));localStorage.setItem('lsgbl_tracker_v2',JSON.stringify(d))}catch(e){}}
+
+function toggle(id){const t=PHASES.flatMap(p=>p.tasks).find(x=>x.id===id);if(!t)return;t.done=!t.done;saveState();updateStats();renderTask(t);}
+function togglePhase(id){if(openPhases.has(id))openPhases.delete(id);else openPhases.add(id);const b=document.getElementById('body-'+id);const ic=document.getElementById('icon-'+id);if(b)b.classList.toggle('open',openPhases.has(id));if(ic)ic.textContent=openPhases.has(id)?'▲':'▼';}
+function expandAll(){PHASES.forEach(p=>{openPhases.add(p.id);const b=document.getElementById('body-'+p.id);const ic=document.getElementById('icon-'+p.id);if(b)b.classList.add('open');if(ic)ic.textContent='▲';});}
+function collapseAll(){PHASES.forEach(p=>{openPhases.delete(p.id);const b=document.getElementById('body-'+p.id);const ic=document.getElementById('icon-'+p.id);if(b)b.classList.remove('open');if(ic)ic.textContent='▼';});}
+function setFilter(f){filter=f;['all','todo','done'].forEach(x=>{const el=document.getElementById('f-'+x);if(el)el.classList.toggle('btn-active',x===f)});render();}
+function resetAll(){if(!confirm('Reset semua checklist ke belum selesai?'))return;PHASES.forEach(ph=>ph.tasks.forEach(t=>t.done=false));saveState();updateStats();render();}
+
+function updateStats(){
+  let total=0,done=0;
+  PHASES.forEach(ph=>ph.tasks.forEach(t=>{total++;if(t.done)done++;}));
+  const todo=total-done,pct=total>0?Math.round(done/total*100):0;
+  document.getElementById('st-total').textContent=total;
+  document.getElementById('st-done').textContent=done;
+  document.getElementById('st-todo').textContent=todo;
+  document.getElementById('st-pct').textContent=pct+'%';
+  document.getElementById('main-prog').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=pct+'%';
+  document.getElementById('b-total').textContent=total+' tugas';
+  document.getElementById('b-done').textContent=done+' selesai';
+  document.getElementById('b-todo').textContent=todo+' belum';
+  PHASES.forEach(ph=>{
+    const pt=ph.tasks.length,pd=ph.tasks.filter(t=>t.done).length,pp=pt>0?Math.round(pd/pt*100):0;
+    const mf=document.getElementById('mf-'+ph.id),pptxt=document.getElementById('pp-'+ph.id);
+    if(mf)mf.style.width=pp+'%';if(pptxt)pptxt.textContent=pd+'/'+pt;
+  });
+}
+
+function renderTask(t){const el=document.getElementById('task-'+t.id);if(!el)return;el.className='task-row'+(t.done?' done':'');const cb=el.querySelector('.cb');if(cb)cb.className='cb'+(t.done?' checked':'');}
+
+function peopleHtml(ppl){return ppl.map(p=>`<span class="avatar ${p.cls}" title="${p.name}">${p.init}</span>`).join('');}
+
+function render(){
+  let html='';
+  PHASES.forEach(ph=>{
+    const filtered=filter==='all'?ph.tasks:filter==='done'?ph.tasks.filter(t=>t.done):ph.tasks.filter(t=>!t.done);
+    if(filtered.length===0&&filter!=='all')return;
+    const pt=ph.tasks.length,pd=ph.tasks.filter(t=>t.done).length,pp=pt>0?Math.round(pd/pt*100):0;
+    const isOpen=openPhases.has(ph.id);
+    let secs={};filtered.forEach(t=>{if(!secs[t.section])secs[t.section]=[];secs[t.section].push(t);});
+    let body='';
+    Object.entries(secs).forEach(([sec,tasks])=>{
+      body+=`<div class="section-divider">${sec}</div>`;
+      tasks.forEach(t=>{
+        body+=`<div class="task-row${t.done?' done':''}" id="task-${t.id}">
+          <div><div class="cb${t.done?' checked':''}" onclick="toggle('${t.id}')"></div></div>
+          <div>
+            <div class="task-title">${t.title}</div>
+            <div class="task-target">${t.target}</div>
+            <div class="task-people">${peopleHtml(t.people)}</div>
+            <div class="task-output">Output: ${t.output}</div>
+          </div>
+          <div class="task-date">${t.date}</div>
+        </div>`;
+      });
+    });
+    html+=`<div class="phase-card" id="phase-${ph.id}">
+      <div class="phase-head" onclick="togglePhase('${ph.id}')">
+        <div class="phase-num" style="background:${ph.numBg};color:${ph.numColor}">${ph.num}</div>
+        <div class="phase-title">${ph.title}</div>
+        <div class="phase-meta">
+          <span class="badge ${ph.colorClass}">${ph.period}</span>
+          <span class="tkt-badge">${ph.tkt}</span>
+          <span class="phase-prog-txt" id="pp-${ph.id}">${pd}/${pt}</span>
+          <div class="mini-prog"><div class="mini-fill" id="mf-${ph.id}" style="width:${pp}%;background:${ph.miniFill}"></div></div>
+          <span class="toggle-icon" id="icon-${ph.id}">${isOpen?'▲':'▼'}</span>
+        </div>
+      </div>
+      <div class="phase-body${isOpen?' open':''}" id="body-${ph.id}">${body}</div>
+    </div>`;
+  });
+  if(!html)html='<div class="empty-msg">Tidak ada tugas yang sesuai filter.</div>';
+  document.getElementById('phases-container').innerHTML=html;
+  updateStats();
+}
+
+loadState();render();updateStats();
+</script>
+</body>
+</html>
