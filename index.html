@@ -73,7 +73,6 @@ a{color:inherit;text-decoration:none}
 .task-target{font-size:12px;color:#666;line-height:1.4;margin-bottom:5px}
 .task-people{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
 .task-output{font-size:11px;color:#888;font-style:italic;line-height:1.4}
-.task-date{font-size:11px;color:#888;background:#f1efe8;border-radius:4px;padding:2px 8px;white-space:nowrap;align-self:flex-start;margin-top:1px}
 /* Avatar */
 .avatar{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:500}
 .av-a{background:#FAEEDA;color:#633806}.av-t{background:#E1F5EE;color:#085041}
@@ -94,6 +93,33 @@ a{color:inherit;text-decoration:none}
 .config-banner{background:#FAEEDA;border:1px solid #e8c97b;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.6}
 .config-banner strong{color:#633806}
 .config-banner code{background:#fff5e0;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px}
+/* Task action menu */
+.task-actions{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.task-date{font-size:11px;color:#888;background:#f1efe8;border-radius:4px;padding:2px 8px;white-space:nowrap}
+.menu-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s,background .15s}
+.menu-btn:hover{color:#534AB7;background:#EEEDFE}
+.note-count{font-size:10px;color:#888;background:#f1efe8;border-radius:10px;padding:1px 6px;cursor:pointer;border:none;transition:background .15s}
+.note-count:hover{background:#EEEDFE;color:#534AB7}
+.note-count.has-notes{background:#EEEDFE;color:#3C3489;font-weight:500}
+/* Notes panel (inline di bawah task) */
+.notes-panel{background:#fafafa;border-top:1px dashed #e5e3dc;padding:12px 16px 12px 56px}
+.notes-panel-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.note-item{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f0ede6}
+.note-item:last-child{border-bottom:none}
+.note-body{flex:1}
+.note-text{font-size:12px;color:#333;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.note-meta{font-size:10px;color:#aaa;margin-top:2px}
+.note-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:13px;padding:0 2px;flex-shrink:0;transition:color .15s}
+.note-del:hover{color:#a32d2d}
+.note-form{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.note-input{flex:1;min-width:160px;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;resize:none;background:#fff;outline:none;transition:border .15s}
+.note-input:focus{border-color:#7F77DD}
+.note-author-input{width:100px;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;background:#fff;outline:none;transition:border .15s}
+.note-author-input:focus{border-color:#7F77DD}
+.note-submit{padding:6px 12px;background:#534AB7;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.note-submit:hover{background:#3C3489}
+.note-submit:disabled{opacity:.5;cursor:default}
+.notes-loading{font-size:12px;color:#aaa;padding:6px 0}
 /* Footer */
 footer{text-align:center;font-size:11px;color:#aaa;padding:24px 0 16px;border-top:1px solid #e5e3dc;margin-top:24px}
 /* Responsive */
@@ -170,8 +196,8 @@ footer{text-align:center;font-size:11px;color:#aaa;padding:24px 0 16px;border-to
 // ============================================================
 //  ⚙️  KONFIGURASI SUPABASE — EDIT BAGIAN INI
 // ============================================================
-const SUPABASE_URL      = 'https://jvfpvirsqwcaxjeklvpx.supabase.co';   // ← ganti
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2ZnB2aXJzcXdjYXhqZWtsdnB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MTMwNjMsImV4cCI6MjA5NjA4OTA2M30.v2qUkT2ddE6G1S-mCEzAVlEPhD254M0opObpofHMMAs';       // ← ganti
+const SUPABASE_URL      = 'https://jvfpvirsqwcaxjeklvpx.supabase.co';   // ← sudah diperbaiki
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imp2ZnB2aXJzcXdjYXhqZWtsdnB4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1MTMwNjMsImV4cCI6MjA5NjA4OTA2M30.v2qUkT2ddE6G1S-mCEzAVlEPhD254M0opObpofHMMAs';  // ← ganti dengan anon key (eyJ...)
 // ============================================================
 
 // Cek apakah sudah dikonfigurasi
@@ -272,7 +298,133 @@ async function toggle(id) {
   updateStats();
 }
 
-function togglePhase(id) {
+// ---- Notes state ----
+// notesCache: { [task_id]: [ {id, content, author, created_at}, ... ] }
+const notesCache = {};
+// openNotes: Set of task_id yang panel-nya sedang terbuka
+const openNotes = new Set();
+
+// ---- Notes: load dari Supabase ----
+async function loadNotes(taskId) {
+  const data = await sbFetch(`task_notes?task_id=eq.${taskId}&order=created_at.asc`, {
+    headers: { 'Prefer': 'return=representation' }
+  });
+  notesCache[taskId] = data || [];
+  return notesCache[taskId];
+}
+
+// ---- Notes: tambah ----
+async function addNote(taskId) {
+  const inputEl  = document.getElementById(`note-input-${taskId}`);
+  const authorEl = document.getElementById(`note-author-${taskId}`);
+  const btnEl    = document.getElementById(`note-btn-${taskId}`);
+  const content  = inputEl.value.trim();
+  const author   = authorEl.value.trim() || 'Anonim';
+  if (!content) return;
+
+  btnEl.disabled = true;
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/task_notes', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ task_id: taskId, content, author })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const [newNote] = await res.json();
+    if (!notesCache[taskId]) notesCache[taskId] = [];
+    notesCache[taskId].push(newNote);
+    inputEl.value = '';
+    renderNotesPanel(taskId);
+    renderNoteCount(taskId);
+    showToast('✓ Catatan disimpan');
+  } catch (e) {
+    showToast('Gagal menyimpan catatan.', true);
+  }
+  btnEl.disabled = false;
+}
+
+// ---- Notes: hapus ----
+async function deleteNote(taskId, noteId) {
+  if (!confirm('Hapus catatan ini?')) return;
+  try {
+    await sbFetch(`task_notes?id=eq.${noteId}`, { method: 'DELETE' });
+    notesCache[taskId] = (notesCache[taskId] || []).filter(n => n.id !== noteId);
+    renderNotesPanel(taskId);
+    renderNoteCount(taskId);
+    showToast('Catatan dihapus.');
+  } catch (e) {
+    showToast('Gagal menghapus catatan.', true);
+  }
+}
+
+// ---- Notes: toggle panel ----
+async function toggleNotes(taskId) {
+  const panelEl = document.getElementById(`notes-panel-${taskId}`);
+  if (!panelEl) return;
+
+  if (openNotes.has(taskId)) {
+    openNotes.delete(taskId);
+    panelEl.style.display = 'none';
+    return;
+  }
+
+  openNotes.add(taskId);
+  panelEl.style.display = 'block';
+
+  // Tampilkan loading jika belum di-cache
+  if (!notesCache[taskId]) {
+    panelEl.querySelector('.notes-list').innerHTML = '<div class="notes-loading">Memuat catatan…</div>';
+    await loadNotes(taskId);
+  }
+  renderNotesPanel(taskId);
+}
+
+// ---- Notes: render panel ----
+function renderNotesPanel(taskId) {
+  const listEl = document.getElementById(`notes-list-${taskId}`);
+  if (!listEl) return;
+  const notes = notesCache[taskId] || [];
+  if (notes.length === 0) {
+    listEl.innerHTML = '<div class="notes-loading">Belum ada catatan.</div>';
+    return;
+  }
+  listEl.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <div class="note-body">
+        <div class="note-text">${escHtml(n.content)}</div>
+        <div class="note-meta">${escHtml(n.author)} · ${fmtDate(n.created_at)}</div>
+      </div>
+      <button class="note-del" onclick="deleteNote('${taskId}', ${n.id})" title="Hapus">✕</button>
+    </div>
+  `).join('');
+}
+
+// ---- Notes: render badge jumlah catatan ----
+function renderNoteCount(taskId) {
+  const el = document.getElementById(`note-count-${taskId}`);
+  if (!el) return;
+  const count = (notesCache[taskId] || []).length;
+  el.textContent = count > 0 ? `${count} catatan` : '+ catatan';
+  el.className = 'note-count' + (count > 0 ? ' has-notes' : '');
+}
+
+// ---- Util ----
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+}
+
+
   if (openPhases.has(id)) openPhases.delete(id); else openPhases.add(id);
   const b = document.getElementById('body-' + id);
   const ic = document.getElementById('icon-' + id);
@@ -383,6 +535,8 @@ function render() {
     Object.entries(secs).forEach(([sec, tasks]) => {
       body += `<div class="section-divider">${sec}</div>`;
       tasks.forEach(t => {
+        const isNotesOpen = openNotes.has(t.id);
+        const noteCount = (notesCache[t.id] || []).length;
         body += `<div class="task-row${t.done ? ' done' : ''}" id="task-${t.id}">
           <div><div class="cb${t.done ? ' checked' : ''}" onclick="toggle('${t.id}')"></div></div>
           <div>
@@ -391,7 +545,19 @@ function render() {
             <div class="task-people">${peopleHtml(t.people)}</div>
             <div class="task-output">Output: ${t.output || ''}</div>
           </div>
-          <div class="task-date">${t.date_range || ''}</div>
+          <div class="task-actions">
+            <div class="task-date">${t.date_range || ''}</div>
+            <button class="note-count${noteCount > 0 ? ' has-notes' : ''}" id="note-count-${t.id}" onclick="toggleNotes('${t.id}')">${noteCount > 0 ? noteCount + ' catatan' : '+ catatan'}</button>
+          </div>
+        </div>
+        <div class="notes-panel" id="notes-panel-${t.id}" style="display:${isNotesOpen ? 'block' : 'none'}">
+          <div class="notes-panel-title">📝 Catatan untuk tugas ini</div>
+          <div class="notes-list" id="notes-list-${t.id}"></div>
+          <div class="note-form">
+            <textarea class="note-input" id="note-input-${t.id}" rows="2" placeholder="Tulis catatan, kendala, atau update kemajuan…"></textarea>
+            <input class="note-author-input" id="note-author-${t.id}" type="text" placeholder="Nama Anda" />
+            <button class="note-submit" id="note-btn-${t.id}" onclick="addNote('${t.id}')">Simpan</button>
+          </div>
         </div>`;
       });
     });
@@ -412,6 +578,10 @@ function render() {
   });
   if (!html) html = '<div class="empty-msg">Tidak ada tugas yang sesuai filter.</div>';
   document.getElementById('phases-container').innerHTML = html;
+  // Re-render notes panel yang sudah di-cache dan terbuka
+  openNotes.forEach(taskId => {
+    if (notesCache[taskId]) renderNotesPanel(taskId);
+  });
   updateStats();
 }
 
