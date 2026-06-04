@@ -424,7 +424,7 @@ function fmtDate(iso) {
     + ' ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
 }
 
-
+function togglePhase(id) {
   if (openPhases.has(id)) openPhases.delete(id); else openPhases.add(id);
   const b = document.getElementById('body-' + id);
   const ic = document.getElementById('icon-' + id);
