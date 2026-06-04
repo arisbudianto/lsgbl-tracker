@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Research Tracker — LS-GBL Framework | UNS 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f8f7f4;color:#1a1a18;font-size:14px;line-height:1.5}
+a{color:inherit;text-decoration:none}
+.container{max-width:860px;margin:0 auto;padding:24px 16px}
+/* Header */
+.site-header{background:#fff;border-bottom:1px solid #e5e3dc;padding:14px 0;position:sticky;top:0;z-index:100}
+.site-header .inner{max-width:860px;margin:0 auto;padding:0 16px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px}
+.site-title{font-size:15px;font-weight:500}
+.site-sub{font-size:11px;color:#888;margin-top:1px}
+/* Badges */
+.badge{display:inline-block;padding:2px 9px;border-radius:4px;font-size:11px;font-weight:500}
+.bp{background:#EEEDFE;color:#3C3489}.bt{background:#E1F5EE;color:#0F6E56}
+.ba{background:#FAEEDA;color:#854F0B}.bb{background:#E6F1FB;color:#185FA5}
+.bgr{background:#F1EFE8;color:#5F5E5A}.bc{background:#FAECE7;color:#993C1D}
+.bpi{background:#FBEAF0;color:#993556}.bg{background:#EAF3DE;color:#3B6D11}
+/* Stats */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:20px 0}
+.stat{background:#fff;border:1px solid #e5e3dc;border-radius:10px;padding:12px 14px}
+.stat-lbl{font-size:11px;color:#888;margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:500}
+/* Progress */
+.prog-wrap{margin-bottom:16px}
+.prog-label{display:flex;justify-content:space-between;font-size:12px;color:#888;margin-bottom:5px}
+.prog-track{height:8px;background:#e5e3dc;border-radius:4px;overflow:hidden}
+.prog-fill{height:100%;background:#534AB7;border-radius:4px;transition:width .4s}
+/* Filter bar */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;align-items:center}
+.filter-bar span{font-size:12px;color:#888}
+.btn{padding:6px 12px;border-radius:8px;border:1px solid #d5d3cc;background:#fff;color:#1a1a18;font-size:12px;cursor:pointer;transition:background .15s}
+.btn:hover{background:#f1efe8}
+.btn-pri{background:#534AB7;color:#fff;border-color:#534AB7}
+.btn-pri:hover{background:#3C3489}
+.btn-active{background:#f1efe8;font-weight:500}
+.btn-danger{color:#a32d2d;border-color:#f09595}
+.btn-danger:hover{background:#fcebeb}
+/* Phase card */
+.phase-card{background:#fff;border:1px solid #e5e3dc;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.phase-head{display:flex;align-items:center;gap:10px;padding:12px 16px;background:#faf9f6;border-bottom:1px solid #e5e3dc;cursor:pointer;user-select:none;flex-wrap:wrap}
+.phase-head:hover{background:#f1efe8}
+.phase-num{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.phase-title{font-size:14px;font-weight:500;flex:1;min-width:160px}
+.phase-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.phase-prog-txt{font-size:12px;color:#888}
+.mini-prog{width:60px;height:4px;background:#e5e3dc;border-radius:2px;overflow:hidden;display:inline-block;vertical-align:middle;margin-left:4px}
+.mini-fill{height:100%;border-radius:2px;transition:width .3s}
+.tkt-badge{display:inline-block;padding:2px 7px;border-radius:3px;font-size:10px;font-weight:500;background:#FAEEDA;color:#633806}
+.toggle-icon{font-size:11px;color:#888;flex-shrink:0}
+/* Phase body */
+.phase-body{display:none}
+.phase-body.open{display:block}
+.section-divider{font-size:11px;font-weight:500;color:#888;padding:6px 16px;background:#faf9f6;border-bottom:1px solid #e5e3dc;letter-spacing:.03em;text-transform:uppercase}
+/* Task row */
+.task-row{display:grid;grid-template-columns:30px 1fr auto;align-items:flex-start;gap:10px;padding:12px 16px;border-bottom:1px solid #e5e3dc;transition:background .1s}
+.task-row:last-child{border-bottom:none}
+.task-row:hover{background:#faf9f6}
+.task-row.done .task-title{text-decoration:line-through;color:#aaa}
+.task-row.done .task-target{color:#bbb}
+/* Checkbox */
+.cb{width:18px;height:18px;border:1.5px solid #ccc;border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;background:#fff;margin-top:1px}
+.cb:hover{border-color:#7F77DD}
+.cb.checked{background:#534AB7;border-color:#534AB7}
+.cb.checked::after{content:'';display:block;width:5px;height:9px;border:2px solid #fff;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px)}
+.cb.saving{opacity:0.4;pointer-events:none}
+/* Task content */
+.task-title{font-size:13px;font-weight:500;line-height:1.4;margin-bottom:3px}
+.task-target{font-size:12px;color:#666;line-height:1.4;margin-bottom:5px}
+.task-people{display:flex;gap:4px;flex-wrap:wrap;margin-bottom:4px}
+.task-output{font-size:11px;color:#888;font-style:italic;line-height:1.4}
+/* Avatar */
+.avatar{display:inline-flex;align-items:center;justify-content:center;width:22px;height:22px;border-radius:50%;font-size:9px;font-weight:500}
+.av-a{background:#FAEEDA;color:#633806}.av-t{background:#E1F5EE;color:#085041}
+.av-p{background:#EEEDFE;color:#3C3489}.av-b{background:#E6F1FB;color:#0C447C}
+.av-c{background:#FAECE7;color:#712B13}.av-g{background:#EAF3DE;color:#27500A}
+.av-pi{background:#FBEAF0;color:#72243E}.av-am{background:#FAEEDA;color:#412402}
+/* Empty / loading */
+.empty-msg{padding:24px;text-align:center;color:#888;font-size:13px}
+.loading-wrap{padding:40px;text-align:center}
+.spinner{display:inline-block;width:28px;height:28px;border:3px solid #e5e3dc;border-top-color:#534AB7;border-radius:50%;animation:spin .7s linear infinite;margin-bottom:10px}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-txt{font-size:13px;color:#888}
+/* Toast notifikasi */
+#toast{position:fixed;bottom:20px;right:20px;background:#1a1a18;color:#fff;padding:10px 16px;border-radius:8px;font-size:12px;opacity:0;pointer-events:none;transition:opacity .3s;z-index:999;max-width:280px}
+#toast.show{opacity:1}
+#toast.error{background:#a32d2d}
+/* Config banner */
+.config-banner{background:#FAEEDA;border:1px solid #e8c97b;border-radius:10px;padding:14px 16px;margin-bottom:16px;font-size:13px;line-height:1.6}
+.config-banner strong{color:#633806}
+.config-banner code{background:#fff5e0;padding:1px 5px;border-radius:3px;font-family:monospace;font-size:12px}
+/* Task action menu */
+.task-actions{display:flex;flex-direction:column;gap:4px;align-items:flex-end}
+.task-date{font-size:11px;color:#888;background:#f1efe8;border-radius:4px;padding:2px 8px;white-space:nowrap}
+.menu-btn{background:none;border:none;cursor:pointer;color:#bbb;font-size:16px;line-height:1;padding:2px 4px;border-radius:4px;transition:color .15s,background .15s}
+.menu-btn:hover{color:#534AB7;background:#EEEDFE}
+.note-count{font-size:10px;color:#888;background:#f1efe8;border-radius:10px;padding:1px 6px;cursor:pointer;border:none;transition:background .15s}
+.note-count:hover{background:#EEEDFE;color:#534AB7}
+.note-count.has-notes{background:#EEEDFE;color:#3C3489;font-weight:500}
+/* Notes panel (inline di bawah task) */
+.notes-panel{background:#fafafa;border-top:1px dashed #e5e3dc;padding:12px 16px 12px 56px}
+.notes-panel-title{font-size:11px;font-weight:500;color:#888;text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.note-item{display:flex;gap:8px;align-items:flex-start;padding:6px 0;border-bottom:1px solid #f0ede6}
+.note-item:last-child{border-bottom:none}
+.note-body{flex:1}
+.note-text{font-size:12px;color:#333;line-height:1.5;white-space:pre-wrap;word-break:break-word}
+.note-meta{font-size:10px;color:#aaa;margin-top:2px}
+.note-del{background:none;border:none;cursor:pointer;color:#ccc;font-size:13px;padding:0 2px;flex-shrink:0;transition:color .15s}
+.note-del:hover{color:#a32d2d}
+.note-form{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.note-input{flex:1;min-width:160px;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;resize:none;background:#fff;outline:none;transition:border .15s}
+.note-input:focus{border-color:#7F77DD}
+.note-author-input{width:100px;border:1px solid #ddd;border-radius:6px;padding:6px 10px;font-size:12px;font-family:inherit;background:#fff;outline:none;transition:border .15s}
+.note-author-input:focus{border-color:#7F77DD}
+.note-submit{padding:6px 12px;background:#534AB7;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap;transition:background .15s}
+.note-submit:hover{background:#3C3489}
+.note-submit:disabled{opacity:.5;cursor:default}
+.notes-loading{font-size:12px;color:#aaa;padding:6px 0}
+/* Footer */
+footer{text-align:center;font-size:11px;color:#aaa;padding:24px 0 16px;border-top:1px solid #e5e3dc;margin-top:24px}
+/* Responsive */
+@media(max-width:500px){
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .task-row{grid-template-columns:28px 1fr}
+  .task-date{display:none}
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="inner">
+    <div>
+      <div class="site-title">Research Tracker — LS-GBL Framework</div>
+      <div class="site-sub">Scaffolding Adaptif Berbasis LLM · UNS 2026 · PFA-UNS</div>
+    </div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap">
+      <span class="badge bp" id="b-total">— tugas</span>
+      <span class="badge bg" id="b-done">— selesai</span>
+      <span class="badge bc" id="b-todo">— belum</span>
+    </div>
+  </div>
+</header>
+
+<div class="container">
+
+  <!-- Banner konfigurasi — hanya muncul jika belum dikonfigurasi -->
+  <div class="config-banner" id="config-banner" style="display:none">
+    ⚙️ <strong>Konfigurasi Supabase diperlukan.</strong><br>
+    Buka file HTML ini di text editor, cari bagian <code>KONFIGURASI SUPABASE</code> di dalam &lt;script&gt;, lalu isi:
+    <br>• <code>SUPABASE_URL</code> → dari Supabase Dashboard → Project Settings → API → Project URL
+    <br>• <code>SUPABASE_ANON_KEY</code> → dari Supabase Dashboard → Project Settings → API → anon public
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat"><div class="stat-lbl">Total tugas</div><div class="stat-val" id="st-total">—</div></div>
+    <div class="stat"><div class="stat-lbl">Selesai</div><div class="stat-val" id="st-done" style="color:#0F6E56">—</div></div>
+    <div class="stat"><div class="stat-lbl">Belum</div><div class="stat-val" id="st-todo" style="color:#993C1D">—</div></div>
+    <div class="stat"><div class="stat-lbl">Progress</div><div class="stat-val" id="st-pct">—</div></div>
+  </div>
+
+  <div class="prog-wrap">
+    <div class="prog-label"><span>Progress penelitian keseluruhan</span><span id="prog-pct">0%</span></div>
+    <div class="prog-track"><div class="prog-fill" id="main-prog" style="width:0%"></div></div>
+  </div>
+
+  <div class="filter-bar">
+    <span>Tampilkan:</span>
+    <button class="btn btn-active" id="f-all" onclick="setFilter('all')">Semua</button>
+    <button class="btn" id="f-todo" onclick="setFilter('todo')">Belum selesai</button>
+    <button class="btn" id="f-done" onclick="setFilter('done')">Sudah selesai</button>
+    <button class="btn btn-pri" onclick="expandAll()">Buka semua fase</button>
+    <button class="btn" onclick="collapseAll()">Tutup semua</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset checklist</button>
+  </div>
+
+  <div id="phases-container">
+    <div class="loading-wrap">
+      <div class="spinner"></div>
+      <div class="loading-txt">Memuat data dari Supabase…</div>
+    </div>
+  </div>
+
+  <footer>
+    LS-GBL Research Tracker · Universitas Sebelas Maret 2026 · Dr. Aris Budianto, S.T., M.Eng.
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+//  ⚙️  KONFIGURASI SUPABASE — EDIT BAGIAN INI
+// ============================================================
+const SUPABASE_URL      = 'https://jvfpvirsqwcaxjeklvpx.supabase.co';   // ← sudah diperbaiki
+const SUPABASE_ANON_KEY = 'sb_publishable_kwaX2KRBrVXkGO1rNie3JA_l-a8FMif';  // ← ganti dengan anon key (eyJ...)
+// ============================================================
+
+// Cek apakah sudah dikonfigurasi
+const IS_CONFIGURED = !SUPABASE_URL.includes('XXXXXXXX') && !SUPABASE_ANON_KEY.startsWith('eyXXX');
+
+// ---- State lokal ----
+let PHASES = [];
+let PEOPLE = {};   // { init: { init, name, cls } }
+let filter = 'all';
+let openPhases = new Set(['f1']);
+
+// ---- Toast ----
+function showToast(msg, isError = false) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'show' + (isError ? ' error' : '');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.className = '', 2500);
+}
+
+// ---- Supabase REST helper ----
+async function sbFetch(path, options = {}) {
+  const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, {
+    ...options,
+    headers: {
+      'apikey': SUPABASE_ANON_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=minimal',
+      ...(options.headers || {})
+    }
+  });
+  if (!res.ok) {
+    const err = await res.text();
+    throw new Error(err);
+  }
+  if (res.status === 204 || res.headers.get('content-length') === '0') return null;
+  return res.json();
+}
+
+// ---- Ambil semua data dari Supabase ----
+async function loadData() {
+  // Ambil people
+  const people = await sbFetch('people?select=*');
+  people.forEach(p => PEOPLE[p.init] = p);
+
+  // Ambil phases + tasks + task_people sekaligus
+  const phases = await sbFetch('phases?select=*&order=num.asc');
+  const tasks  = await sbFetch('tasks?select=*&order=id.asc');
+  const tp     = await sbFetch('task_people?select=*');
+
+  // Kelompokkan task_people per task_id
+  const tpMap = {};
+  tp.forEach(r => {
+    if (!tpMap[r.task_id]) tpMap[r.task_id] = [];
+    tpMap[r.task_id].push(r.person_init);
+  });
+
+  // Kelompokkan tasks per phase
+  const taskMap = {};
+  tasks.forEach(t => {
+    if (!taskMap[t.phase_id]) taskMap[t.phase_id] = [];
+    t.people = (tpMap[t.id] || []).map(init => PEOPLE[init]).filter(Boolean);
+    taskMap[t.phase_id].push(t);
+  });
+
+  PHASES = phases.map(ph => ({
+    ...ph,
+    tasks: taskMap[ph.id] || []
+  }));
+}
+
+// ---- Toggle status task ----
+async function toggle(id) {
+  const task = PHASES.flatMap(p => p.tasks).find(t => t.id === id);
+  if (!task) return;
+
+  // Optimistic UI
+  const cb = document.querySelector(`#task-${id} .cb`);
+  if (cb) cb.classList.add('saving');
+
+  const newDone = !task.done;
+  task.done = newDone;
+
+  try {
+    await sbFetch(`tasks?id=eq.${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ done: newDone })
+    });
+    showToast(newDone ? '✓ Tugas ditandai selesai' : '○ Tugas dibuka kembali');
+  } catch (e) {
+    // Rollback
+    task.done = !newDone;
+    showToast('Gagal menyimpan. Periksa koneksi.', true);
+  }
+
+  renderTask(task);
+  updateStats();
+}
+
+// ---- Notes state ----
+// notesCache: { [task_id]: [ {id, content, author, created_at}, ... ] }
+const notesCache = {};
+// openNotes: Set of task_id yang panel-nya sedang terbuka
+const openNotes = new Set();
+
+// ---- Notes: load dari Supabase ----
+async function loadNotes(taskId) {
+  const data = await sbFetch(`task_notes?task_id=eq.${taskId}&order=created_at.asc`, {
+    headers: { 'Prefer': 'return=representation' }
+  });
+  notesCache[taskId] = data || [];
+  return notesCache[taskId];
+}
+
+// ---- Notes: tambah ----
+async function addNote(taskId) {
+  const inputEl  = document.getElementById(`note-input-${taskId}`);
+  const authorEl = document.getElementById(`note-author-${taskId}`);
+  const btnEl    = document.getElementById(`note-btn-${taskId}`);
+  const content  = inputEl.value.trim();
+  const author   = authorEl.value.trim() || 'Anonim';
+  if (!content) return;
+
+  btnEl.disabled = true;
+  try {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/task_notes', {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({ task_id: taskId, content, author })
+    });
+    if (!res.ok) throw new Error(await res.text());
+    const [newNote] = await res.json();
+    if (!notesCache[taskId]) notesCache[taskId] = [];
+    notesCache[taskId].push(newNote);
+    inputEl.value = '';
+    renderNotesPanel(taskId);
+    renderNoteCount(taskId);
+    showToast('✓ Catatan disimpan');
+  } catch (e) {
+    showToast('Gagal menyimpan catatan.', true);
+  }
+  btnEl.disabled = false;
+}
+
+// ---- Notes: hapus ----
+async function deleteNote(taskId, noteId) {
+  if (!confirm('Hapus catatan ini?')) return;
+  try {
+    await sbFetch(`task_notes?id=eq.${noteId}`, { method: 'DELETE' });
+    notesCache[taskId] = (notesCache[taskId] || []).filter(n => n.id !== noteId);
+    renderNotesPanel(taskId);
+    renderNoteCount(taskId);
+    showToast('Catatan dihapus.');
+  } catch (e) {
+    showToast('Gagal menghapus catatan.', true);
+  }
+}
+
+// ---- Notes: toggle panel ----
+async function toggleNotes(taskId) {
+  const panelEl = document.getElementById(`notes-panel-${taskId}`);
+  if (!panelEl) return;
+
+  if (openNotes.has(taskId)) {
+    openNotes.delete(taskId);
+    panelEl.style.display = 'none';
+    return;
+  }
+
+  openNotes.add(taskId);
+  panelEl.style.display = 'block';
+
+  // Tampilkan loading jika belum di-cache
+  if (!notesCache[taskId]) {
+    panelEl.querySelector('.notes-list').innerHTML = '<div class="notes-loading">Memuat catatan…</div>';
+    await loadNotes(taskId);
+  }
+  renderNotesPanel(taskId);
+}
+
+// ---- Notes: render panel ----
+function renderNotesPanel(taskId) {
+  const listEl = document.getElementById(`notes-list-${taskId}`);
+  if (!listEl) return;
+  const notes = notesCache[taskId] || [];
+  if (notes.length === 0) {
+    listEl.innerHTML = '<div class="notes-loading">Belum ada catatan.</div>';
+    return;
+  }
+  listEl.innerHTML = notes.map(n => `
+    <div class="note-item">
+      <div class="note-body">
+        <div class="note-text">${escHtml(n.content)}</div>
+        <div class="note-meta">${escHtml(n.author)} · ${fmtDate(n.created_at)}</div>
+      </div>
+      <button class="note-del" onclick="deleteNote('${taskId}', ${n.id})" title="Hapus">✕</button>
+    </div>
+  `).join('');
+}
+
+// ---- Notes: render badge jumlah catatan ----
+function renderNoteCount(taskId) {
+  const el = document.getElementById(`note-count-${taskId}`);
+  if (!el) return;
+  const count = (notesCache[taskId] || []).length;
+  el.textContent = count > 0 ? `${count} catatan` : '+ catatan';
+  el.className = 'note-count' + (count > 0 ? ' has-notes' : '');
+}
+
+// ---- Util ----
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+function fmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  return d.toLocaleDateString('id-ID', { day:'numeric', month:'short', year:'numeric' })
+    + ' ' + d.toLocaleTimeString('id-ID', { hour:'2-digit', minute:'2-digit' });
+}
+
+
+  if (openPhases.has(id)) openPhases.delete(id); else openPhases.add(id);
+  const b = document.getElementById('body-' + id);
+  const ic = document.getElementById('icon-' + id);
+  if (b) b.classList.toggle('open', openPhases.has(id));
+  if (ic) ic.textContent = openPhases.has(id) ? '▲' : '▼';
+}
+
+function expandAll() {
+  PHASES.forEach(p => {
+    openPhases.add(p.id);
+    const b = document.getElementById('body-' + p.id);
+    const ic = document.getElementById('icon-' + p.id);
+    if (b) b.classList.add('open');
+    if (ic) ic.textContent = '▲';
+  });
+}
+
+function collapseAll() {
+  PHASES.forEach(p => {
+    openPhases.delete(p.id);
+    const b = document.getElementById('body-' + p.id);
+    const ic = document.getElementById('icon-' + p.id);
+    if (b) b.classList.remove('open');
+    if (ic) ic.textContent = '▼';
+  });
+}
+
+function setFilter(f) {
+  filter = f;
+  ['all','todo','done'].forEach(x => {
+    const el = document.getElementById('f-' + x);
+    if (el) el.classList.toggle('btn-active', x === f);
+  });
+  render();
+}
+
+async function resetAll() {
+  if (!confirm('Reset semua checklist ke belum selesai? Data akan diupdate di database.')) return;
+
+  const ids = PHASES.flatMap(p => p.tasks).map(t => t.id);
+  try {
+    // Reset semua tasks sekaligus
+    await sbFetch('tasks?id=in.(' + ids.join(',') + ')', {
+      method: 'PATCH',
+      body: JSON.stringify({ done: false })
+    });
+    PHASES.forEach(ph => ph.tasks.forEach(t => t.done = false));
+    showToast('Semua checklist direset.');
+  } catch (e) {
+    showToast('Gagal reset. Periksa koneksi.', true);
+  }
+  updateStats();
+  render();
+}
+
+// ---- Update statistik ----
+function updateStats() {
+  let total = 0, done = 0;
+  PHASES.forEach(ph => ph.tasks.forEach(t => { total++; if (t.done) done++; }));
+  const todo = total - done, pct = total > 0 ? Math.round(done / total * 100) : 0;
+  document.getElementById('st-total').textContent = total;
+  document.getElementById('st-done').textContent = done;
+  document.getElementById('st-todo').textContent = todo;
+  document.getElementById('st-pct').textContent = pct + '%';
+  document.getElementById('main-prog').style.width = pct + '%';
+  document.getElementById('prog-pct').textContent = pct + '%';
+  document.getElementById('b-total').textContent = total + ' tugas';
+  document.getElementById('b-done').textContent = done + ' selesai';
+  document.getElementById('b-todo').textContent = todo + ' belum';
+  PHASES.forEach(ph => {
+    const pt = ph.tasks.length, pd = ph.tasks.filter(t => t.done).length;
+    const pp = pt > 0 ? Math.round(pd / pt * 100) : 0;
+    const mf = document.getElementById('mf-' + ph.id);
+    const pptxt = document.getElementById('pp-' + ph.id);
+    if (mf) mf.style.width = pp + '%';
+    if (pptxt) pptxt.textContent = pd + '/' + pt;
+  });
+}
+
+function renderTask(t) {
+  const el = document.getElementById('task-' + t.id);
+  if (!el) return;
+  el.className = 'task-row' + (t.done ? ' done' : '');
+  const cb = el.querySelector('.cb');
+  if (cb) { cb.className = 'cb' + (t.done ? ' checked' : ''); }
+}
+
+function peopleHtml(ppl) {
+  return (ppl || []).map(p =>
+    `<span class="avatar ${p.cls}" title="${p.name}">${p.init}</span>`
+  ).join('');
+}
+
+// ---- Render utama ----
+function render() {
+  let html = '';
+  PHASES.forEach(ph => {
+    const filtered = filter === 'all' ? ph.tasks
+      : filter === 'done' ? ph.tasks.filter(t => t.done)
+      : ph.tasks.filter(t => !t.done);
+    if (filtered.length === 0 && filter !== 'all') return;
+    const pt = ph.tasks.length, pd = ph.tasks.filter(t => t.done).length;
+    const pp = pt > 0 ? Math.round(pd / pt * 100) : 0;
+    const isOpen = openPhases.has(ph.id);
+    const secs = {};
+    filtered.forEach(t => { if (!secs[t.section]) secs[t.section] = []; secs[t.section].push(t); });
+    let body = '';
+    Object.entries(secs).forEach(([sec, tasks]) => {
+      body += `<div class="section-divider">${sec}</div>`;
+      tasks.forEach(t => {
+        const isNotesOpen = openNotes.has(t.id);
+        const noteCount = (notesCache[t.id] || []).length;
+        body += `<div class="task-row${t.done ? ' done' : ''}" id="task-${t.id}">
+          <div><div class="cb${t.done ? ' checked' : ''}" onclick="toggle('${t.id}')"></div></div>
+          <div>
+            <div class="task-title">${t.title}</div>
+            <div class="task-target">${t.target || ''}</div>
+            <div class="task-people">${peopleHtml(t.people)}</div>
+            <div class="task-output">Output: ${t.output || ''}</div>
+          </div>
+          <div class="task-actions">
+            <div class="task-date">${t.date_range || ''}</div>
+            <button class="note-count${noteCount > 0 ? ' has-notes' : ''}" id="note-count-${t.id}" onclick="toggleNotes('${t.id}')">${noteCount > 0 ? noteCount + ' catatan' : '+ catatan'}</button>
+          </div>
+        </div>
+        <div class="notes-panel" id="notes-panel-${t.id}" style="display:${isNotesOpen ? 'block' : 'none'}">
+          <div class="notes-panel-title">📝 Catatan untuk tugas ini</div>
+          <div class="notes-list" id="notes-list-${t.id}"></div>
+          <div class="note-form">
+            <textarea class="note-input" id="note-input-${t.id}" rows="2" placeholder="Tulis catatan, kendala, atau update kemajuan…"></textarea>
+            <input class="note-author-input" id="note-author-${t.id}" type="text" placeholder="Nama Anda" />
+            <button class="note-submit" id="note-btn-${t.id}" onclick="addNote('${t.id}')">Simpan</button>
+          </div>
+        </div>`;
+      });
+    });
+    html += `<div class="phase-card" id="phase-${ph.id}">
+      <div class="phase-head" onclick="togglePhase('${ph.id}')">
+        <div class="phase-num" style="background:${ph.num_bg};color:${ph.num_color}">${ph.num}</div>
+        <div class="phase-title">${ph.title}</div>
+        <div class="phase-meta">
+          <span class="badge ${ph.color_class}">${ph.period}</span>
+          <span class="tkt-badge">${ph.tkt}</span>
+          <span class="phase-prog-txt" id="pp-${ph.id}">${pd}/${pt}</span>
+          <div class="mini-prog"><div class="mini-fill" id="mf-${ph.id}" style="width:${pp}%;background:${ph.mini_fill}"></div></div>
+          <span class="toggle-icon" id="icon-${ph.id}">${isOpen ? '▲' : '▼'}</span>
+        </div>
+      </div>
+      <div class="phase-body${isOpen ? ' open' : ''}" id="body-${ph.id}">${body}</div>
+    </div>`;
+  });
+  if (!html) html = '<div class="empty-msg">Tidak ada tugas yang sesuai filter.</div>';
+  document.getElementById('phases-container').innerHTML = html;
+  // Re-render notes panel yang sudah di-cache dan terbuka
+  openNotes.forEach(taskId => {
+    if (notesCache[taskId]) renderNotesPanel(taskId);
+  });
+  updateStats();
+}
+
+// ---- Init ----
+async function init() {
+  if (!IS_CONFIGURED) {
+    document.getElementById('config-banner').style.display = 'block';
+    document.getElementById('phases-container').innerHTML =
+      '<div class="empty-msg">⚠️ Supabase belum dikonfigurasi. Lihat banner di atas.</div>';
+    document.getElementById('st-total').textContent =
+    document.getElementById('st-done').textContent =
+    document.getElementById('st-todo').textContent =
+    document.getElementById('st-pct').textContent = '—';
+    return;
+  }
+
+  try {
+    await loadData();
+    render();
+  } catch (e) {
+    document.getElementById('phases-container').innerHTML =
+      `<div class="empty-msg">❌ Gagal memuat data dari Supabase.<br><small>${e.message}</small></div>`;
+    showToast('Koneksi Supabase gagal.', true);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
